@@ -1,4 +1,4 @@
-
+//Design and simulate a Turing Machine which will increment the given binary number by 1.
 #include <iostream>
 #include <string>
 using namespace std;
