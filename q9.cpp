@@ -1,36 +1,82 @@
 #include <iostream>
-#include <string>
 using namespace std;
-bool simulateTM(string input) {
- int i = 0;
- while (true) {
- while (i < input.length() && input[i] != 'a') i++;
- if (i == input.length()) break;
- input[i] = 'X';
- i++;
- while (i < input.length() && input[i] != 'b') i++;
- if (i == input.length()) return false;
- input[i] = 'Y';
- i++;
- while (i < input.length() && input[i] != 'c') i++;
- if (i == input.length()) return false;
- input[i] = 'Z';
- i = 0;
- }
- for (char c : input) {
- if (c == 'a' || c == 'b' || c == 'c') return false;
- }
- return true;
+
+bool turingMachine(string tape) {
+    tape = "_" + tape + "_";
+    int head = 1;
+    int state = 0;
+    int length = tape.length();
+
+    while (true) {
+        switch (state) {
+            case 0:
+                if (tape[head] == 'a') {
+                    tape[head] = 'X';
+                    state = 1;
+                    head++;
+                } else if (tape[head] == '_') {
+                    state = 6;
+                } else {
+                    return false;
+                }
+                break;
+
+            case 1:
+                if (tape[head] == 'a') {
+                    head++;
+                } else if (tape[head] == 'b') {
+                    tape[head] = 'Y';
+                    state = 2;
+                    head++;
+                } else {
+                    return false;
+                }
+                break;
+
+            case 2:
+                if (tape[head] == 'b') {
+                    head++;
+                } else if (tape[head] == 'c') {
+                    tape[head] = 'Z';
+                    state = 3;
+                    head--;
+                } else {
+                    return false;
+                }
+                break;
+
+            case 3:
+                if (tape[head] == 'X' || tape[head] == 'Y' || tape[head] == 'Z') {
+                    head--;
+                } else if (tape[head] == '_') {
+                    state = 0;
+                    head++;
+                } else {
+                    return false;
+                }
+                break;
+
+            case 6:
+                for (char c : tape) {
+                    if (c != 'X' && c != 'Y' && c != 'Z' && c != '_') {
+                        return false;
+                    }
+                }
+                return true;
+        }
+    }
 }
+
 int main() {
- string input;
- cout << "Enter a string in the format a^n b^n c^n: ";
- cin >> input;
- if (simulateTM(input)) {
- cout << "String accepted by the Turing Machine." << endl;
- }
- else {
- cout << "String rejected by the Turing Machine." << endl;
- }
- return 0;
+    string input;
+    cout << "Enter a string: ";
+    cin >> input;
+
+    if (turingMachine(input)) {
+        cout << "String accepted!" << endl;
+    } else {
+        cout << "String rejected!" << endl;
+    }
+
+    return 0;
 }
