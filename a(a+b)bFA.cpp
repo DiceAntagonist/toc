@@ -1,23 +1,47 @@
-//q4
-#include <iostream>
-#include <string>
+#include<iostream>
+#include<string>
 using namespace std;
 
-bool FA(string w) {
-    int n = w.length();
-    return (n >= 2 && w[0] == 'a' && w[n - 1] == 'b');
+bool ab (string c){
+     for(int i = 0; i<c.length(); i++){
+        if(c[i]!='a'&& c[i]!='b'){
+        return false;}
+        
+   
+     } 
+     return true;
+       
 }
 
-int main() {
-    string w;
-    cout << "Enter a string over {a, b}: ";
-    cin >> w;
+bool FA(string c){
+   
+        if(ab(c)){
+           
+          if (c[0]=='a' && c[c.length()-1]=='b') {
+            return true;
+        }
+        else 
+        {
+            return false;
+        }
+            
+        }
+        else {return false;}
+    
+    
+}
 
-    if (FA(w)) {
-        cout << "String accepted" << endl;
-    } else {
-        cout << "String rejected" << endl;
-    }
 
+
+
+
+int main(){
+    
+    cout<<"enter string";
+    string c;
+    cin>>c;
+   if(FA(c)){ cout<<"string accepted";}
+   else{cout<<"string rejected";}
+   
     return 0;
 }
