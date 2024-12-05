@@ -2,67 +2,54 @@
 using namespace std;
 
 bool turingMachine(string tape) {
-    tape = "_" + tape + "_";
+    tape = "_" + tape + "_"; // Add blank symbols
     int head = 1;
-    int state = 0;
     int length = tape.length();
 
     while (true) {
-        switch (state) {
-            case 0:
-                if (tape[head] == 'a') {
-                    tape[head] = 'X';
-                    state = 1;
-                    head++;
-                } else if (tape[head] == '_') {
-                    state = 6;
-                } else {
-                    return false;
-                }
+        // Check for completion
+        bool completed = true;
+        for (int i = 1; i < length - 1; i++) {
+            if (tape[i] == 'a' || tape[i] == 'b' || tape[i] == 'c') {
+                completed = false;
                 break;
+            }
+        }
+        if (completed) return true; // Accept if all symbols are marked
 
-            case 1:
-                if (tape[head] == 'a') {
-                    head++;
-                } else if (tape[head] == 'b') {
-                    tape[head] = 'Y';
-                    state = 2;
-                    head++;
-                } else {
-                    return false;
+        // Process 'a'
+        if (tape[head] == 'a') {
+            tape[head] = 'X';
+            int num = -1;
+            for (int i = head + 1; i < length; i++) {
+                if (tape[i] == 'b') {
+                    num = i;
+                    break;
                 }
-                break;
+            }
+            if (num == -1) return false; // Reject if no 'b' found
 
-            case 2:
-                if (tape[head] == 'b') {
-                    head++;
-                } else if (tape[head] == 'c') {
-                    tape[head] = 'Z';
-                    state = 3;
-                    head--;
-                } else {
-                    return false;
+            // Process 'b'
+            tape[num] = 'Y';
+            int num2 = -1;
+            for (int i = num + 1; i < length; i++) {
+                if (tape[i] == 'c') {
+                    num2 = i;
+                    break;
                 }
-                break;
+            }
+            if (num2 == -1) return false; // Reject if no 'c' found
 
-            case 3:
-                if (tape[head] == 'X' || tape[head] == 'Y' || tape[head] == 'Z') {
-                    head--;
-                } else if (tape[head] == '_') {
-                    state = 0;
-                    head++;
-                } else {
-                    return false;
+            // Process 'c'
+            tape[num2] = 'Z';
+            for (int i = num2 - 1; i > 0; i--) {
+                if (tape[i] == 'X') {
+                    head = i + 1; // Move head to next unprocessed 'a'
+                    break;
                 }
-                break;
-
-            case 6:
-                for (char c : tape) {
-                    if (c != 'X' && c != 'Y' && c != 'Z' && c != '_') {
-                        return false;
-                    }
-                }
-                return true;
+            }
+        } else {
+            return false; // Reject if invalid character
         }
     }
 }
